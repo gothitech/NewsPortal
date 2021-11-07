@@ -1,0 +1,146 @@
+{% extends 'back-end/admin_panel/index.html' %}
+{% load static %}
+
+{% block main-block %}
+
+
+<!-- begin app-main -->
+<div class="app-main" id="main">
+    <!-- begin container-fluid -->
+    <div class="container-fluid">
+        <!-- begin row -->
+
+        <!--            django message framework-->
+        <div class="row">
+            <div class="col-xl-3"></div>
+            <div class="col-xl-6">
+                {% if messages %}
+                {% for message in messages %}
+
+                <div {% if message.tags %} class="alert alert-{{ message.tags }} alert-dismissible fade show" {% endif %} role="alert">
+                    <strong>{{ message }}!</strong>
+                    <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
+
+                {% endfor %}
+                {% endif %}
+            </div>
+            <div class="col-xl-3"></div>
+        </div>
+
+        <!--            django message framework ends-->
+
+        <div class="row">
+            <div class="col-xl-3"></div>
+            <div class="col-xl-6">
+                <div class="card card-statistics">
+                    <div class="card-header">
+                        <div class="card-heading">
+                            <h4 class="card-title">Add image to news gallery</h4>
+                        </div>
+                    </div>
+                    <div class="card-body">
+                        <form action="{%url 'apNewsGallery' %}" method="POST" enctype="multipart/form-data">
+                            {% csrf_token %}
+
+
+                            <div class="form-row">
+                                <div class="form-group col-md-12">
+                                    <label for="newsIMG">Add news image</label>
+                                    <input type="file" name="news-img" class="form-control" id="newsIMG" accept="image/*" multiple required>
+                                </div>
+                                <div class="form-group col-md-12" id="gallery_img_list">
+                                    <br>
+                                </div>
+                            </div>
+
+                            <div class="form-row">
+                                <div class="form-group col-md-12">
+                                    <label for="news_title">Add Image Title</label>
+                                    <textarea name="news_title" id="news_title" class="form-control" cols="30" class="form-control" rows="3" placeholder="News Title" required></textarea>
+                                    <script>
+                                        CKEDITOR.replace('news_title');
+                                    </script>
+                                </div>
+                            </div>
+
+                            <div class="form-row">
+                                <div class="form-group col-md-12">
+                                    <label for="news_img_short_description">Add Image Short Description</label>
+                                    <textarea id="news_img_short_description" class="form-control" name="news_img_short_description" class="form-control" rows="3" placeholder="Image Short Description" required></textarea>
+                                    <script>
+                                        CKEDITOR.replace('news_img_short_description');
+                                    </script>
+                                </div>
+                            </div>
+
+                            <div class="form-row">
+                                <div class="form-group col-md-6">
+                                    <label for="inputState">News Category</label>
+                                    <select name="news_category" id="select_news_cat" class="form-control" required>
+                                        {%if news_cat_list %}
+                                        <option selected>Select Category</option>
+                                        {% for news_cat in news_cat_list %}
+                                        <option value="{{news_cat.pk}}">{{news_cat.name}}</option>
+                                        {% endfor %}
+                                        {% else %}
+                                        <option selected>Category not found!</option>
+                                        {% endif %}
+                                    </select>
+                                </div>
+                                <div class="form-group col-md-6">
+                                    <label for="inputState">News Sub-category</label>
+                                    <select name="news_cat_subcat" id="select_news_subcat" class="form-control" required>
+                                        {% if news_subcat_list %}
+                                        <option selected>Select State</option>
+                                        {% for subcat in news_subcat_list %}
+                                        <option value="{{subcat.pk}}">{{subcat.news_subcat}}</option>
+                                        {% endfor %}
+                                        {% else %}
+                                        <option selected>Sub-category not found!</option>
+                                        {% endif %}
+                                    </select>
+                                </div>
+                            </div>
+
+                            <button type="submit" class="btn btn-primary">Add Now</button>
+                        </form>
+                    </div>
+                </div>
+            </div>
+            <div class="col-xl-3"></div>
+        </div>
+        <!-- end row -->
+    </div>
+    <!-- end container-fluid -->
+</div>
+
+<script>
+    const newsIMG = document.getElementById('newsIMG');
+    const gallery_img_list = document.getElementById('gallery_img_list');
+
+
+
+    newsIMG.onchange = () =>{
+
+    img_obj = newsIMG.files;
+    gallery_img_list.innerHTML = '';
+
+    for (const img in img_obj){
+    let img_url = URL.createObjectURL(img_obj[img]);
+    let create_img_tag=  document.createElement("img");
+    create_img_tag.src = img_url;
+    create_img_tag.style.width = '10%';
+    create_img_tag.style.height = '50px';
+    create_img_tag.style.border = '1px solid black';
+    gallery_img_list.appendChild(create_img_tag);
+    }
+
+    };
+
+</script>
+
+<!-- end app-main -->
+{% endblock %}

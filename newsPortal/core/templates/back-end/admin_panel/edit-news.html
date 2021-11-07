@@ -1,0 +1,228 @@
+{% extends 'back-end/admin_panel/index.html' %}
+{% load static %}
+
+{% block main-block %}
+
+
+<!-- begin app-main -->
+<div class="app-main" id="main">
+    <!-- begin container-fluid -->
+    <div class="container-fluid">
+        <!-- begin row -->
+
+        <!--            django message framework-->
+        <div class="row">
+            <div class="col-xl-3"></div>
+            <div class="col-xl-6">
+                {% if messages %}
+                {% for message in messages %}
+
+                <div {% if message.tags %} class="alert alert-{{ message.tags }} alert-dismissible fade show" {% endif %} role="alert">
+                    <strong>{{ message }}!</strong>
+                    <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
+
+                {% endfor %}
+                {% endif %}
+            </div>
+            <div class="col-xl-3"></div>
+        </div>
+
+        <!--            django message framework ends-->
+
+        <div class="row">
+            <div class="col-xl-3"></div>
+            <div class="col-xl-6">
+                <div class="card card-statistics">
+                    <div class="card-header">
+                        <div class="card-heading">
+                            <h4 class="card-title">Update News</h4>
+                        </div>
+                    </div>
+                    <div class="card-body">
+                        <form action="{%url 'apEditNews' news_id=news_by_news_id.pk %}" method="POST" enctype="multipart/form-data">
+                            {% csrf_token %}
+                            <div class="form-row">
+                                <div class="form-group col-md-6">
+                                    <label for="newsIMG">Add news image</label>
+                                    <input type="file" name="news-img" class="form-control" id="newsIMG">
+                                </div>
+                                <div class="form-group col-md-6">
+                                    <br>
+                                    <img src="{{news_by_news_id.news_img.url}}" style="width: 90%; height: 200px;" id="img_preview" alt="">
+                                </div>
+                            </div>
+
+                            <div class="form-row">
+                                <div class="form-group col-md-12">
+                                    <label for="imgShortDesc">Add Image Short Description</label>
+                                    <textarea id="imgShortDesc" class="form-control" name="news_img_short_description" class="form-control" rows="3" placeholder="Image Short Description" required>{{news_by_news_id.news_img_short_description}}</textarea>
+                                </div>
+                            </div>
+
+
+                            <div class="form-row">
+                                <div class="form-group col-md-12">
+                                    <label for="inputCity">Add News Title</label>
+                                    <textarea name="news_title" id="news_title" class="form-control" cols="30" class="form-control" rows="3" placeholder="News Title" required>{{news_by_news_id.news_title}}</textarea>
+<!--                                    <script>-->
+<!--                                        CKEDITOR.replace('news_title');-->
+<!--                                    </script>-->
+                                </div>
+                            </div>
+
+                            <div class="form-row">
+                                <div class="form-group col-md-12">
+                                    <label for="inputCity">Add News Details</label>
+                                    <textarea name="news_details" id="news_details" class="form-control" cols="30" class="form-control" rows="8" placeholder="Add News Details" required>{{news_by_news_id.news_details}}</textarea>
+                                    <script>
+                                        CKEDITOR.replace('news_details');
+                                    </script>
+                                </div>
+                            </div>
+
+                            <div class="form-row">
+                                <div class="form-group col-md-6">
+                                    <label for="inputState">News Category</label>
+                                    <select name="news_category" id="select_news_cat" class="form-control" required>
+                                        {%if news_cat_list %}
+                                        <option value="">Select Category</option>
+                                        {% for news_cat in news_cat_list %}
+                                        {% if news_by_news_id.news_category.pk == news_cat.pk %}
+                                        <option value="{{news_cat.pk}}" selected>{{news_cat.name}}</option>
+                                        {% else %}
+                                        <option value="{{news_cat.pk}}">{{news_cat.name}}</option>
+                                        {% endif %}
+                                        {% endfor %}
+                                        {% else %}
+                                        <option value="" selected>Not found!</option>
+                                        {% endif %}
+                                    </select>
+                                </div>
+                                <div class="form-group col-md-6">
+                                    <label for="inputState">News Sub-category</label>
+                                    <select name="news_cat_subcat" id="select_news_subcat" class="form-control">
+                                        {% if news_subcat_list %}
+                                        <option value="">Select Subcategory</option>
+                                        {% for subcat in news_subcat_list %}
+                                        {% if news_by_news_id.news_subcategory.pk == subcat.pk %}
+                                        <option value="{{subcat.pk}}" selected>{{subcat.news_subcat}}</option>
+                                        {% else %}
+                                        <option value="{{subcat.pk}}">{{subcat.news_subcat}}</option>
+                                        {% endif %}
+                                        {% endfor %}
+                                        {% else %}
+                                        <option value="" selected>Not found!</option>
+                                        {% endif %}
+                                    </select>
+                                </div>
+                            </div>
+
+                            <div class="form-row">
+                                <div class="form-group col-md-6">
+                                    <label for="inputState">News Editor</label>
+                                    <select name="news_writer" id="inputState" class="form-control" required>
+                                        {% if news_editorList %}
+                                        <option value="" selected>Select News Editor</option>
+                                        {% for editor in news_editorList %}
+                                        {% if editor.pk == news_by_news_id.news_writer_id %}
+                                        <option value="{{editor.pk}}" selected>{{editor.name}}</option>
+                                        {% else %}
+                                        <option value="{{editor.pk}}">{{editor.name}}</option>
+                                        {% endif %}
+                                        {% endfor %}
+                                        {% else %}
+                                        <option value="">Not found!</option>
+                                        {% endif %}
+                                    </select>
+                                </div>
+                                <div class="form-group col-md-6">
+                                    <label for="inputState">News Publisher</label>
+                                    <select name="news_publisher" id="inputState" class="form-control" required>
+                                        {% if news_publisherList %}
+                                        <option value="">Select News Publisher</option>
+                                        {% for publisher in news_publisherList %}
+                                        {% if news_by_news_id.news_publisher_id == publisher.pk %}
+                                        <option value="{{publisher.pk}}" selected>{{publisher.name}}</option>
+                                        {% else %}
+                                        <option value="{{publisher.pk}}">{{publisher.name}}</option>
+                                        {% endif %}
+                                        {% endfor %}
+                                        {% else %}
+                                        <option value="">Not found!</option>
+                                        {% endif %}
+                                    </select>
+                                </div>
+                            </div>
+
+                            <div class="form-row">
+                                <div class="form-group col-md-6">
+                                    <label for="inputCity">News Tags</label>
+                                    <textarea name="news_tags" id="" class="form-control" cols="30" class="form-control" rows="3" placeholder="News Tags(use comma(,) after each tag)">{{news_by_news_id.news_tags}}</textarea>
+                                </div>
+                            </div>
+
+                            <button type="submit" class="btn btn-primary">Add News</button>
+                        </form>
+                    </div>
+                </div>
+            </div>
+            <div class="col-xl-3"></div>
+        </div>
+        <!-- end row -->
+    </div>
+    <!-- end container-fluid -->
+</div>
+
+<script>
+    const newsIMG = document.getElementById('newsIMG');
+    const img_preview = document.getElementById('img_preview');
+
+
+    newsIMG.onchange = () =>{
+    let img_url = URL.createObjectURL(newsIMG.files[0]);
+    img_preview.src = img_url;
+    };
+
+
+
+
+<!--/ add news section #################################################################-->
+const news_cat = document.getElementById('select_news_cat');
+const select_news_subcat = document.getElementById('select_news_subcat');
+
+news_cat.addEventListener('change', function(event){
+
+    select_news_subcat.innerHTML = '<option value="">News Subcategory</option>';
+<!--    // starts ajax method-->
+    $.ajax({
+
+    url: 'http://127.0.0.1:8000/ap/add/news/',
+    type: 'get',
+    data: {
+        news_cat_id: event.target.value,
+    },
+    success: function(response){
+        news_subcats  = response.news_subcat_list,
+<!--        map function starts-->
+
+        news_subcats.map(subcat=>{
+        create_subcat_Option = document.createElement('option');
+        create_subcat_Option.textContent = subcat.news_subcat;
+        create_subcat_Option.value = subcat.id;
+        select_news_subcat.appendChild(create_subcat_Option);
+        })
+
+<!--        map function ends-->
+    },
+
+    });
+<!--     ends ajax method-->
+});
+
+</script>
+
+<!-- end app-main -->
+{% endblock %}

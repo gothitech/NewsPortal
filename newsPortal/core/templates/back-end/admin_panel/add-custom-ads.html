@@ -1,0 +1,185 @@
+{% extends 'back-end/admin_panel/index.html' %}
+{% load static %}
+
+{% block main-block %}
+
+
+<!-- begin app-main -->
+<div class="app-main" id="main">
+    <!-- begin container-fluid -->
+    <div class="container-fluid">
+        <!-- begin row -->
+
+        <!--            django message framework-->
+        <div class="row">
+            <div class="col-xl-3"></div>
+            <div class="col-xl-6">
+                {% if messages %}
+                {% for message in messages %}
+
+                <div {% if message.tags %} class="alert alert-{{ message.tags }} alert-dismissible fade show" {% endif %} role="alert">
+                    <strong>{{ message }}!</strong>
+                    <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
+
+                {% endfor %}
+                {% endif %}
+            </div>
+            <div class="col-xl-3"></div>
+        </div>
+
+        <!--            django message framework ends-->
+
+        <div class="row">
+            <div class="col-xl-3"></div>
+            <div class="col-xl-6">
+                <div class="row">
+                    <div class="col-xl-12">
+                        <div class="card card-statistics">
+                            <div class="card-header">
+                                <div class="card-heading">
+                                    <h4 class="card-title">Add Sponsored Ads</h4>
+                                </div>
+                            </div>
+                            <div class="card-body">
+                                <form action="{%url 'apAddCustomAds' %}" method="POST" enctype="multipart/form-data">
+                                    {% csrf_token %}
+                                    <div class="form-row">
+                                        <div class="form-group col-md-6">
+                                            <label for="upload-site-logo">Add New Sponsored Ads</label>
+                                            <input type="file" name="ads_img" class="form-control" id="upload-site-logo"
+                                                   placeholder="Add news site logo" required>
+                                        </div>
+                                        
+                                        <div class="form-group col-md-6">
+                                            <img src="{% static 'back-end/adminPanel/assets/img/logo.png' %}" id="logo-preview" style="width: 100%;" alt="">
+                                        </div>
+                                        
+                                    </div>
+                                    <div class="form-row">
+                                        <div class="form-group col-md-6">
+                                            <label for="ads_position">Select Ads Position</label>
+                                            <select name="ads_position" id="ads_position" class="form-control" required>
+                                                <option value="">Select Ads Position</option>
+                                                <option value="onload">After Loading The Site</option>
+                                                <option value="on_header">Top Of The Site</option>
+                                                <option value="on_middle">Middle Of The Site</option>
+                                            </select>
+                                        </div>
+
+                                    </div>
+
+                                    <div class="form-row">
+                                        <div class="form-group col-md-6">
+                                            <label for="">Link (link of ads)</label>
+                                            <input type="text" name="url" class="form-control" placeholder="Type url (optional)">
+                                        </div>
+                                    </div>
+
+                                    <button type="submit" class="btn btn-primary">Click To Add</button>
+                                </form>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-xl-12">
+                        <div class="card card-statistics">
+                            <div class="card-header">
+                                <div class="card-heading">
+                                    <h4 class="card-title">Sponsored Ads List</h4>
+                                </div>
+                            </div>
+                            <div class="card-body">
+                                <div class="table-responsive">
+                                    <table class="table table-success mb-0">
+                                        <thead>
+                                        <tr>
+                                            <th scope="col" class="text-center">#</th>
+                                            <th scope="col" class="text-center">Image</th>
+                                            <th scope="col" class="text-center">Added At</th>
+                                            <th scope="col" class="text-center">Action</th>
+                                        </tr>
+                                        </thead>
+                                        <tbody>
+                                        {% if customAdsList %}
+                                        {% for ads in customAdsList %}
+                                        <tr>
+                                            <th scope="row" class="text-center">{{forloop.counter}}</th>
+                                            <td class="text-center"><img src="{{ads.img.url}}" style="width: 100px; height: 100px; border-radius: 50%;" alt=""></td>
+                                            <td class="text-center">{{ads.added_at}}</td>
+                                            <td class="text-center">
+
+                                                <!--                                        delete modal-->
+                                                <button type="button" data-toggle="modal"
+                                                        data-target="#deleteAds{{ads.pk}}"
+                                                        style="width: auto; border: none; cursor: pointer; outline: none;background:   #FF0000; color: white;">
+                                                    Delete
+                                                </button>
+
+                                                 <!-- Modal -->
+                                                <div class="modal fade" id="deleteAds{{ads.pk}}" tabindex="-1"
+                                                     role="dialog"
+                                                     aria-labelledby="deleteAds{{ads.pk}}" aria-hidden="true">
+                                                    <div class="modal-dialog" role="document">
+                                                        <div class="modal-content">
+                                                            <div class="modal-header">
+                                                                <p class="modal-title" id="exampleModalLabel">Are you
+                                                                    sure want
+                                                                    to delete this <strong><img src="{{ads.img.url}}" style="width: 50px; height: 50px; border-radius: 50%;" alt=""></strong> image?</p>
+                                                                <button type="button" class="close" data-dismiss="modal"
+                                                                        aria-label="Close">
+                                                                    <span aria-hidden="true">&times;</span>
+                                                                </button>
+                                                            </div>
+                                                            <div class="modal-footer">
+                                                                <button type="button" class="btn btn-secondary"
+                                                                        data-dismiss="modal">No
+                                                                </button>
+                                                                <a href="{% url 'apDeleteCustomAds' ads_id=ads.pk %}">
+                                                                    <button type="button" class="btn btn-primary">Yes
+                                                                    </button>
+                                                                </a>
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                </div>
+
+                                                <!--ends logo delete model -->
+
+                                            </td>
+                                        </tr>
+                                        {% endfor %}
+                                        {% else %}
+                                        <h3 class="text-center">Editor name not added yet!</h3>
+                                        {% endif %}
+                                        </tbody>
+                                    </table>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="col-xl-3"></div>
+        </div>
+        <!-- end row -->
+    </div>
+    <!-- end container-fluid -->
+</div>
+
+
+<script>
+    const newsIMG = document.getElementById('upload-site-logo');
+    const img_preview = document.getElementById('logo-preview');
+
+
+    newsIMG.onchange = () =>{
+    let img_url = URL.createObjectURL(newsIMG.files[0]);
+    img_preview.src = img_url;
+    };
+
+</script>
+
+<!-- end app-main -->
+{% endblock %}

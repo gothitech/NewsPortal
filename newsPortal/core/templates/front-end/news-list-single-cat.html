@@ -1,0 +1,72 @@
+{% extends 'front-end/index.html' %}
+{% load static %}
+
+{% block site_title %}
+  <title>News List</title>
+{% endblock %}
+
+{% block main-content %}
+
+<!--<br>-->
+  <!-- breadcums -->
+<!--  <section class="breadcumbs">-->
+<!--    <div class="container">-->
+<!--      <div class="row">-->
+<!--        <div class="col-md-12">-->
+<!--          <nav aria-label="breadcrumb">-->
+<!--            <ol class="breadcrumb">-->
+<!--              <li class="breadcrumb-item"><i class="fas fa-home"></i></li>-->
+<!--              <li class="breadcrumb-item" style="color: #9D9EA0;">{{news_cateogory.name}}</li>-->
+<!--            </ol>-->
+<!--          </nav>-->
+<!--        </div>-->
+<!--      </div>-->
+<!--    </div>-->
+<!--  </section>-->
+  <!-- ends breadcumbs -->
+
+
+  <!-- news category section  -->
+  {% if news_list_of_current_cat %}
+  <section class="news-category-section">
+    <div class="container">
+      <div class="row">
+        {% for news in news_list_of_current_cat %}
+        <div class="col-md-3 col-lg-3">
+          <div class="news-cat1">
+            <div class="card">
+              <a href="{%url 'frontEndNewsDetails' pk=news.pk %}">
+                <img class="card-img-top" src="{{news.news_img.url}}" alt="">
+              </a>
+              <h5 class="card-title" style="font-size: 18px;"><a href="{%url 'frontEndNewsDetails' pk=news.pk %}"><strong>{{news.news_title|safe|truncatechars:35}} </strong></a></h5>
+              <p><i class="far fa-clock"></i> {{news.published_at}}</p>
+            </div>
+
+          </div>
+        </div>
+        {% endfor %}
+      </div>
+    </div>
+  </section>
+  {% else %}
+  <section class="news-category-section">
+    <div class="container">
+      <div class="row">
+        <div class="col-md-3"></div>
+        <div class="col-md-6 col-sm-12">
+          <h3>No news found! <strong>Back To Home: <a href="/" style="text-decoration: underline;">Home</a></strong></h3>
+        </div>
+        <div class="col-md-3"></div>
+      </div>
+      <br><br><br><br><br><br>
+    </div>
+  </section>
+  {% endif %}
+  <!-- news category section ends -->
+
+  <br><br><br>
+  {% if news_list_of_current_cat|length <= 3 %}
+  <br><br><br><br><br><br><br><br><br>
+  {% endif %}
+
+{% endblock %}

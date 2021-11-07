@@ -1,0 +1,119 @@
+{% extends 'front-end/index.html' %}
+
+{% load static %}
+
+{% block site_title %}
+  <title>News List</title>
+{% endblock %}
+
+{% block news_list %}
+  <link rel="stylesheet" href="{% static 'front-end/css/news-list-by-category.css' %}">
+{% endblock %}
+
+{% block main-content %}
+  <!-- breadcums -->
+<!--  <section class="breadcumbs">-->
+<!--    <div class="container">-->
+<!--      <div class="row">-->
+<!--        <div class="col-md-12">-->
+<!--          <nav aria-label="breadcrumb">-->
+<!--            <ol class="breadcrumb">-->
+<!--              <li class="breadcrumb-item">Home</li>-->
+<!--              <li class="breadcrumb-item">{{news_category.name}}</li>-->
+<!--            </ol>-->
+<!--          </nav>-->
+<!--        </div>-->
+<!--      </div>-->
+<!--    </div>-->
+<!--  </section>-->
+  <!-- ends breadcumbs -->
+
+
+  <!-- main news starts -->
+  <section class="main-news-list-section">
+    <div class="container">
+
+      <div class="row">
+        <div class="col-md-12 main-news-section-header">
+          <div class="main-news-section-header-title new_list_by_cat_m_recent">
+            <h3><a href="#">Most Recent <span><i class="fas fa-angle-right"></i></span></a></h3>
+          </div>
+        </div>
+      </div>
+
+      <div class="row">
+
+        {% for news in recent_news_list %}
+        <div class="col-md-3 mb-3 news_list_by_cat">
+          <!-- componenets -->
+          <div class="media">
+            <a href="#"><img class="mr-1" src="{{news.news_img.url}}" alt=""></a>
+            <h5 class=""><a href="{% url 'frontEndNewsDetails' pk=news.pk %}">{{news.news_title|safe|truncatechars:35}}</a></h5>
+          </div>
+          <!-- componenets ends -->
+        </div>
+        {% endfor %}
+
+      </div>
+
+    </div>
+  </section>
+  <!-- main news ends -->
+
+  <br>
+
+  <!-- main news starts -->
+ {% if news_subcats_with_news %}
+ {% for news_subcat in news_subcats_with_news %}
+  <section class="main-news-list-section news-category-section">
+    <div class="container">
+      <br><br>
+      <div class="row">
+        <div class="col-md-12 main-news-section-header">
+          <div class="main-news-section-header-title new_list_by_cat_m_recent">
+            <h3><a href="{% url 'frontEndNewsListSubcat' pk=news_subcat.pk %}">{{news_subcat.news_subcat}} <span><i class="fas fa-angle-right"></i></span></a></h3>
+          </div>
+        </div>
+      </div>
+
+      <div class="row">
+        {% for news in news_list_of_current_subcats %}
+        {% for x in news %}
+        {% if x.news_subcategory.pk == news_subcat.pk %}
+        <div class="col-md-3 mb-3 news_list_by_cat">
+          <div class="news-cat1">
+            <div class="card">
+              <a href="{% url 'frontEndNewsDetails' pk=x.pk %}">
+                <img class="card-img-top" src="{{x.news_img.url}}" alt="">
+              </a>
+              <h5 class="card-title" style="font-size: 18px; padding: 5px;"><a href="{% url 'frontEndNewsDetails' pk=x.pk %}"><strong>{{x.news_title|safe|truncatechars:35}} </strong></a></h5>
+              <p style="position:relative; padding-left: 5px;"><i class="far fa-clock"></i> {{x.published_at}}</p>
+            </div>
+
+          </div>
+        </div>
+        {% endif %}
+        {% endfor %}
+        {% endfor %}
+      </div>
+
+      <div class="row main-news-seeMore-btn">
+        <div class="col-12">
+          <div>
+            <button type="button"><a href="{% url 'frontEndNewsListSubcat' pk=news_subcat.pk %}">
+                আরও...
+              </a></button>
+          </div>
+        </div>
+      </div>
+      <br>
+    </div>
+  </section>
+  <br>
+ {% endfor %}
+
+ {% endif %}
+  <!-- main news ends -->
+  <br><br><br><br>
+
+{% endblock %}

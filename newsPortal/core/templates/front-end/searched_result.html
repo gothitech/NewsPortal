@@ -1,0 +1,53 @@
+{% extends 'front-end/index.html' %}
+
+{% load static %}
+
+{% block site_title %}
+  <title>Search Result</title>
+{% endblock %}
+
+{% block main-content %}
+  <!-- news category section  -->
+  <section class="news-category-section">
+    <div class="container">
+      <div class="row">
+        {% if searched_result %}
+        <div class="col-md-12">
+          <nav aria-label="breadcrumb">
+            <ol class="breadcrumb">
+              <li class="breadcrumb-item"><strong>Below news are found according to your query...</strong></li>
+            </ol>
+          </nav>
+        </div>
+
+        {% for news in searched_result %}
+
+        <div class="col-md-4 col-lg-4">
+          <div class="news-cat1">
+            <div class="card">
+              <a href="{%url 'frontEndNewsDetails' pk=news.pk %}">
+                <img class="card-img-top" src="{{news.news_img.url}}" alt="">
+              </a>
+              <h5 class="card-title" style="font-size: 18px;"><a href="{%url 'frontEndNewsDetails' pk=news.pk %}"><strong>{{news.news_title}} </strong></a></h5>
+              <p><i class="far fa-clock"></i> {{news.published_at}}</p>
+            </div>
+
+          </div>
+        </div>
+        {% endfor %}
+
+        {% else %}
+        <h1 class="text-center" style="">No results found!</h1>
+        <br><br><br><br><br><br>
+        <br><br><br><br><br><br>
+        <br><br><br><br>
+        {% endif %}
+      </div>
+    </div>
+  </section>
+  <!-- news category section ends -->
+
+  <br><br><br>
+  <br><br><br>
+
+{% endblock %}

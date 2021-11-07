@@ -1,0 +1,412 @@
+{% extends 'back-end/admin_panel/index.html' %}
+{% load static %}
+
+{% block main-block %}
+
+
+<!-- begin app-main -->
+<div class="app-main" id="main">
+    <!-- begin container-fluid -->
+    <div class="container-fluid">
+        <!-- begin row -->
+
+        <!--            django message framework-->
+        <div class="row">
+            <div class="col-xl-3"></div>
+            <div class="col-xl-6">
+                {% if messages %}
+                {% for message in messages %}
+
+                <div {% if message.tags %} class="alert alert-{{ message.tags }} alert-dismissible fade show" {% endif %} role="alert">
+                    <strong>{{ message }}!</strong>
+                    <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
+
+                {% endfor %}
+                {% endif %}
+            </div>
+            <div class="col-xl-3"></div>
+        </div>
+
+        <!--            django message framework ends-->
+
+        <div class="row">
+            <div class="col-xl-3"></div>
+            <div class="col-xl-6">
+                <div class="card card-statistics">
+                    <div class="card-header">
+                        <div class="card-heading">
+                            <h4 class="card-title">Add News</h4>
+                        </div>
+                    </div>
+                    <div class="card-body">
+                        <form action="{%url 'apAddNews' %}" method="POST" enctype="multipart/form-data">
+                            {% csrf_token %}
+
+                            <div class="form-row">
+                                <div class="form-group col-md-6">
+                                    <label for="newsIMG">Add news image</label>
+                                    <input type="file" name="news-img" class="form-control" id="newsIMG" required>
+                                </div>
+                                <div class="form-group col-md-6">
+                                    <br>
+                                    <img src="{% static 'back-end/adminPanel/assets/img/avtar/03.jpg' %}" style="width: 90%; height: 200px;" id="img_preview" alt="">
+                                </div>
+                            </div>
+
+                            <div class="form-row">
+                                <div class="form-group col-md-12">
+                                    <label for="news_img_short_description">Add Image Short Description</label>
+                                    <textarea class="form-control" name="news_img_short_description" id="news_img_short_description" rows="3" placeholder="Image Short Description" required></textarea>
+                                </div>
+                            </div>
+
+
+                            <div class="form-row">
+                                <div class="form-group col-md-12">
+                                    <label for="news_title">Add News Title</label>
+                                    <textarea name="news_title" id="news_title" class="form-control" cols="30" rows="2" placeholder="News Title" required></textarea>
+<!--                                    <script>-->
+<!--                                        CKEDITOR.replace('news_title');-->
+<!--                                    </script>-->
+                                </div>
+                            </div>
+
+                            <div class="form-row">
+                                <div class="form-group col-md-12">
+                                    <label for="news_details">Add News Details</label>
+                                    <textarea name="news_details" id="news_details" class="form-control" cols="30" rows="8" placeholder="Add News Details" required></textarea>
+                                    <script>
+                                        CKEDITOR.replace('news_details');
+                                    </script>
+                                </div>
+                            </div>
+
+                            <div class="form-row">
+                                <div class="form-group col-md-6">
+                                    <label for="inputState">News Category</label>
+                                    <select name="news_category" id="select_news_cat" class="form-control" required>
+                                        <option value="">Select Category</option>
+                                        {%if news_cat_list %}
+                                        {% for news_cat in news_cat_list %}
+                                        <option value="{{news_cat.pk}}">{{news_cat.name}}</option>
+                                        {% endfor %}
+                                        {% else %}
+                                        <option value="" selected>Category not found!</option>
+                                        {% endif %}
+                                    </select>
+                                </div>
+                                <div class="form-group col-md-6">
+                                    <label for="inputState">News Sub-category</label>
+                                    <select name="news_cat_subcat" id="select_news_subcat" class="form-control">
+                                        <option value="">Subcategory</option>
+                                        {% if news_subcat_list %}
+                                        {% for subcat in news_subcat_list %}
+                                        <option value="{{subcat.pk}}">{{subcat.news_subcat}}</option>
+                                        {% endfor %}
+                                        {% else %}
+                                        <option value="" selected>Sub-category not found!</option>
+                                        {% endif %}
+                                    </select>
+                                </div>
+                            </div>
+
+                            <div class="form-row">
+                                <div class="form-group col-md-6">
+                                    <label for="inputState">News Editor</label>
+                                    <select name="news_writer" id="inputState" class="form-control" required>
+                                        <option value="" selected>Select News Editor</option>
+                                        {% if news_editorList %}
+                                        {% for editor in news_editorList %}
+                                        <option value="{{editor.pk}}">{{editor.name}}</option>
+                                        {% endfor %}
+                                        {% else %}
+                                        <option value="">Not found!</option>
+                                        {% endif %}
+                                    </select>
+                                </div>
+                                <div class="form-group col-md-6">
+                                    <label for="inputState">News Publisher</label>
+                                    <select name="news_publisher" id="inputState" class="form-control" required>
+                                        <option value="">Select News Publisher</option>
+                                        {% if news_publisherList %}
+                                        {% for publisher in news_publisherList %}
+                                        <option value="{{publisher.pk}}">{{publisher.name}}</option>
+                                        {% endfor %}
+                                        {% else %}
+                                        <option value="">Not found!</option>
+                                        {% endif %}
+                                    </select>
+                                </div>
+                            </div>
+
+                            <div class="form-row">
+                                <div class="form-group col-md-6">
+                                    <label for="news-type">News Type</label>
+                                    <select name="news-type" id="news-type" class="form-control" required>
+                                        <option value="">Select News Type</option>
+                                        <option value="general_news">General News</option>
+                                        <option value="lead_news">Lead News</option>
+                                    </select>
+                                </div>
+                                <div class="form-group col-md-6" id="leady-news-type-div">
+                                    <label for="lead-news-type">Lead Type</label>
+                                    <select name="lead-news-type" id="lead-news-type" class="form-control">
+                                        <option value="">Select Lead News Type</option>
+                                        <option value="lead_main">Main Lead News</option>
+                                        <option value="lead_minor_1">Small Top Lead News</option>
+                                        <option value="lead_minor_2">Small Bottom Lead News</option>
+                                    </select>
+                                </div>
+                            </div>
+
+                            <div class="form-row">
+                                <div class="form-group col-md-6">
+                                    <label for="news-division">Division</label>
+                                    <select name="news-division" id="news-division" class="form-control">
+                                        <option value="">Select News Division</option>
+                                        <option value="dhaka">Dhaka</option>
+                                        <option value="barishal">Barishal</option>
+                                        <option value="sylhet">Sylhet</option>
+                                        <option value="rangpur">Rangpur</option>
+                                        <option value="khulna">Khulna</option>
+                                        <option value="mymensingh">Mymensingh</option>
+                                        <option value="chattogram">Chattogram</option>
+                                        <option value="rajshahi">Rajshahi</option>
+                                    </select>
+                                </div>
+                                <div class="form-group col-md-6">
+                                    <label for="news-district-type">Select District</label>
+                                    <select name="news-district" id="news-district-type" class="form-control">
+                                        <option value="">Select District</option>
+                                    </select>
+                                </div>
+                            </div>
+
+                            <div class="form-row">
+                                 <div class="form-group col-md-6">
+                                    <label for="news-upzilla">Select Upozilla</label>
+                                     <select name="news-upozilla" id="news-upzilla" class="form-control">
+                                        <option value="">Select District</option>
+                                    </select>
+                                </div>
+                                <div class="form-group col-md-6">
+                                    <label for="news-tags">News Tags</label>
+                                    <textarea name="news_tags" id="news-tags" class="form-control" cols="30" rows="3" placeholder="News Tags(use comma(,) after each tag)" required></textarea>
+                                </div>
+                            </div>
+
+                            <div class="form-row">
+                                 <div class="form-group col-md-6">
+                                    <label for="news_status">Select status</label>
+                                     <select name="news_status" id="news_status" class="form-control" required>
+                                        <option value="">Select Status</option>
+                                         <option value="publish">Publish</option>
+                                         <option value="draft">Draft</option>
+                                    </select>
+                                </div>
+                            </div>
+
+                            <button type="submit" class="btn btn-primary">Add News</button>
+                        </form>
+                    </div>
+                </div>
+            </div>
+            <div class="col-xl-3"></div>
+        </div>
+        <!-- end row -->
+    </div>
+    <!-- end container-fluid -->
+</div>
+
+
+<script>
+    const newsIMG = document.getElementById('newsIMG');
+    const img_preview = document.getElementById('img_preview');
+
+
+    newsIMG.onchange = () =>{
+    let img_url = URL.createObjectURL(newsIMG.files[0]);
+    img_preview.src = img_url;
+    };
+
+
+        const division = document.querySelector('#news-division');
+        const zilla = document.querySelector('#news-district-type');
+        const upozilla = document.querySelector('#news-upzilla');
+
+        const zilla_under_div = {
+            'dhaka': ['Dhaka', 'Faridpur', 'Gazipur', 'Gopalganj', 'Jamalpur', 'Kishoreganj', 'Madaripur', 'Manikganj', 'Munshiganj', 'Narayanganj', 'Narsingdi', 'Rajbari', 'Shariatpur', 'Tangail'],
+            'chattogram': ['Bandarban', 'Brahmanbaria', 'Chandpur', 'Chittagong', 'Cumilla', 'Coxs Bazar', 'Feni', 'Khagrachhari', 'Lakshmipur', 'Noakhali', 'Rangamati'],
+            'barishal': ['Barguna', 'Barisal', 'Bhola', 'Jhalokati', 'Patuakhali', 'Pirojpur'],
+            'khulna': ['Bagerhat', 'Chuadanga', 'Jessore', 'Jhenaidaha', 'Khulna', 'Kushtia', 'Magura', 'Meherpur', 'Narail', 'Satkhira'],
+            'rangpur': ['Dinajpur', 'Gaibandha', 'Kurigram', 'Lalmonirhat', 'Nilphamari', 'Panchagarh', 'Rangpur', 'Thakurgaon'],
+            'mymensingh': ['Mymensingh', 'Jamalpur', 'Netrokona', 'Sherpur'],
+            'sylhet': ['Moulvibazar', 'Habiganj', 'Sylhet', 'Sunamganj'],
+            'rajshahi': ['Rajshahi', 'Natore', 'Pabna', 'Bogura', 'Chapainawabganj', 'Joypurhat', 'Naogaon', 'Sirajganj'],
+        };
+
+        const upozilla_list = {
+
+            'sylhet': ['Balaganj', 'Beanibazar', 'Bishwanath', 'Companyganj', 'Fenchuganj', 'Golapganj', 'Gowainghat', 'Jaintapur', 'Kanaighat', 'Sylhet Sadar', 'Zakiganj', 'South Surma', 'Osmani'],
+            'moulvibazar': ['Baralekha', 'Kamalganj', 'Kulaura', 'Moulvibazar Sadar', 'Rajnagar', 'Srimangal', 'Juri'],
+            'habiganj': ['Nabiganj', 'Bahubal', 'Ajmiriganj', 'Baniachang', 'Lakhai', 'Chunarughat', 'Habiganj Sadar', 'Madhabpur Upazila', 'Shayestaganj'],
+            'sunamganj': ['Sunamganj Sadar', 'South Sunamganj', 'Bishwambharpur', 'Chhatak', 'Jagannathpur', 'Doarabazar', 'Tahirpur', 'Dharmapasha', 'Jamalganj', 'Shalla', 'Dirai'],
+
+
+            'cumilla': ['Debidwar', 'Baruda', 'Brahmanpara', 'Chandina', 'Chauddagram', 'Daudkandi', 'Homna', 'Laksam', 'Muradnagar', 'Nangalkot', 'Cumilla Sadar', 'Meghna', 'Manoharganj', 'Sadar Dakshin', 'Titas', 'Burichang', 'Lalmai'],
+            'feni': ['Chagalnaiya Upazila', 'Feni Sadar', 'Sonagazi Upazila', 'Fulgazi Upazila', 'Parashuram', 'Daganbhuna'],
+            'brahmanbaria': ['Brahmanbaria Sadar', 'Kasba', 'Nasirnagar', 'Sarail Upazila', 'Ashuganj', 'Akhaura', 'Nabinagar', 'Bancharampur', 'Vijaynagar'],
+            'rangamati': ['Rangamati Sadar', 'Kaptai', 'Kaukhali', 'Baghaichhari', 'Barkal', 'Langadu', 'Rajasthali', 'Bilaichhari', 'Jurachhari', 'Naniyarchar'],
+            'noakhali': ['Noakhali', 'Companyganj', 'Begumganj', 'Hatia', 'Subarnachar', 'Kabirhat', 'Senbagh', 'Chatkhil', 'Sonaimuri'],
+            'chandpur': ['Haimchar', 'Kachua', 'Shahrasti', 'Chandpur Sadar', 'Matlab', 'Hajiganj', 'Matlab', 'Faridganj'],
+            'lakshmipur': ['Laxmipur Sadar', 'Kamalnagar', 'Raipur', 'Ramgati', 'Ramganj'],
+            'chittagong': ['Rangunia', 'Sitakunda Upazila', 'Mirsarai', 'Patia', 'Sandwip', 'Banshkhali', 'Boalkhali', 'Anwara', 'Chandnaish', 'Satkania', 'Lohagara', 'Hathazari', 'Fatikchhari', 'Raozan', 'Karnafuli'],
+            'cox_s Bazar': ["Cox's Bazar Sadar", 'Chakaria', 'Kutubdia', 'Ukhia', 'Maheshkhali', 'Pekua', 'Ramu', 'Teknaf'],
+            'khagrachari': ['Khagrachhari Sadar', 'Dighinala', 'Panchhari', 'Laxichhari', 'Mahalchhari', 'Manikchhari', 'Ramgarh', 'Matiranga', 'Guimara'],
+            'bandarban': ['Bandarban Sadar', 'Alikadam', 'Naikhyangchhari', 'Roangchhari', 'Lama', 'Ruma', 'Thanchi'],
+
+            'sirajganj': ['Belkuchi', 'Chowhali', 'Kamarkhand', 'Kazipur', 'Raiganj', 'Shahjadpur', 'Sirajganj', 'Tarash', 'Ullapara'],
+            'pabna': ['Sujanagar', 'Ishwardi', 'Bhangura', 'Pabna Sadar', 'Bera', 'Atgharia', 'Chatmohar', 'Santhia', 'Faridpur'],
+            'bogra': ['Kahalu Upazila', 'Bogra Sadar', 'Sariakandi', 'Shajahanpur', 'Dupchachinya Upazila', 'Adamdighi Upazila', 'Nandigram', 'Sonatala Upazila', 'Dhunat Upazila', 'Gabtali', 'Sherpur Upazila', 'Shibganj'],
+            'rajshahi': ['Paba Upazila', 'Durgapur Upazila', 'Mohanpur Upazila', 'Charghat Upazila', 'Puthia Upazila', 'Bagha Upazila', 'Godagari Upazila', 'Tanore Upazila', 'Bagmara Upazila'],
+            'natore': ['Natore Sadar', 'Singra', 'Baraigram', 'Bagatipara', 'Lalpur', 'Gurudaspur', 'Naldanga'],
+            'joypurhat': ['Akkelpur Upazila', 'Kalai Upazila', 'Khetlal Upazila', 'Panchbibi Upazila', 'Joypurhat Sadar'],
+            'chapainawabganj': ['Chapainawabganj Sadar', 'Gomstapur', 'Nachol', 'Bholahat', 'Shibganj'],
+            'naogaon': ['Mahadevpur Upazila', 'Badalgachhi Upazila', 'Patnitla Upazila', 'Dhamairhat Upazila', 'Niamatpur Upazila', 'Manda Upazila', 'Atrai Upazila', 'Raninagar Upazila', 'Naogaon Sadar', 'Porsha Upazila', 'Sapahar'],
+
+            'jessore': ['Manirampur', 'Abhaynagar', 'Bagharpara', 'Chougachha', 'Jhikargachha', 'Keshabpur', 'Jessore Sadar', 'Sharsha'],
+            'satkhira': ['Asashuni', 'Debhata', 'Kalaroa', 'Satkhira Sadar', 'Shyamnagar', 'Tala', 'Kaliganj'],
+            'meherpur': ['Mujibnagar', 'Meherpur Sadar', 'Gangni'],
+            'narail': ['Narail Sadar', 'Lohagarh', 'Kalia'],
+            'chuadanga': ['Chuadanga Sadar', 'Alamdanga', 'Damurhuda', 'Jivannagar'],
+            'kushtia': ['Kushtia Sadar', 'Kumarkhali', 'Khoksa', 'Mirpur', 'Daulatpur', 'Bheramara'],
+            'magura': ['Shalikha', 'Sreepur', 'Magura Sadar', 'Mohammadpur'],
+            'khulna': ['Paikgachha', 'Fultala Upazila', 'Dighalia Upazila', 'Rupsha Upazila', 'Terkhada Upazila', 'Dumuria Upazila', 'Batiaghata', 'Dakop Upazila', 'Koira Upazila'],
+            'bagerhat': ['Fakirhat', 'Bagerhat Sadar', 'Mollahat', 'Sharankhola', 'Rampal', 'Morelganj', 'Kachua', 'Mongla', 'Chitalmari'],
+            'jhenaidah': ['Jhenaidah Sadar', 'Shailkupa', 'Harinakundu', 'Kaliganj', 'Kotchandpur', 'Maheshpur'],
+
+            'jhalakathi': ['Jhalokati Sadar ', ' Kathalia ', ' Nalchiti ', ' Rajapur'],
+            'patuakhali': ['Baufal ', ' Patuakhali Sadar ', ' Dumki ', ' Dashmina ', ' Kalapara ', ' Mirzaganj ', ' Galachipa ', ' Rangabali'],
+            'pirojpur': ['Pirojpur Sadar ', ' Nazirpur ', ' Kaukhali ', ' Bhandaria ', ' Mathbaria ', ' Nesharabad ', ' Indurkani'],
+            'barisal': ['Barisal Sadar ', ' Bakerganj ', ' Babuganj ', ' Wazirpur ', ' Banaripara ', ' Gournadi ', ' Agailjhara ', ' Mehendiganj ', ' Muladi ', ' Hijla'],
+            'bhola': ['Bhola Sadar ', ' Borhan Uddin ', ' Char Fashion ', ' Daulatkhan ', ' Monpura ', ' Tajumuddin ', ' Lalmohan'],
+            'barguna': ['Amtali ', ' Barguna Sadar ', ' Betagi Upazila ', ' Bamna ', ' Patharghata ', ' Taltali'],
+
+            'narsingdi': ['Belabo', 'Manohardi', 'Narsingdi', 'Palash', 'Raipura', 'Shibpur'],
+            'gazipur': ['Kaliganj', 'Kaliakair', 'Kapasia', 'Gazipur Sadar', 'Sreepur'],
+            'shariatpur': ['Shariatpur Sadar', 'Naria', 'Jajira', 'Gosairhat', 'Vedharganj', 'Damudya'],
+            'narayanganj': ['Araihazar Upazila', 'Bandar Upazila', 'Narayanganj Sadar', 'Rupganj Upazila', 'Sonargaon Upazila'],
+            'tangail': ['Basail', 'Bhuapur', 'Delduar', 'Ghatail', 'Gopalpur', 'Madhupur', 'Mirzapur', 'Nagarpur', 'Sakhipur', 'Tangail Sadar', 'Kalihati', 'Dhanbari'],
+            'kishoreganj': ['Itna', 'Katiadi', 'Bhairab', 'Tarail', 'Hossainpur', 'Pakundia', 'Kuliyarchar', 'Kishoreganj Sadar', 'Karimganj', 'Bajitpur', 'Ashtagram', 'Mithamin', 'Nikli'],
+            'manikganj': ['Harirampur', 'Saturia', 'Manikganj Sadar', 'Ghior', 'Shibalaya', 'Daulatpur', 'Singair'],
+            'dhaka': ['Savar', 'Dhamrai', 'Keraniganj', 'Nawabganj', 'Dohar'],
+            'munshiganj': ['Munshiganj Sadar', 'Srinagar', 'Sirajdikhan', 'Lauhajang', 'Gazaria', 'tangibari'],
+            'rajbari': ['Rajbari Sadar', 'Goalanda', 'Pangsha', 'Baliakandi', 'Kalukhali'],
+            'madaripur': ['Madaripur Sadar', 'Shibchar', 'Kalkini', 'Rajoir'],
+            'gopalganj': ['Gopalganj Sadar ', ' Kashiani ', ' Tungipara ', ' Kotalipara ', ' Muksudpur'],
+            'faridpur': ['Faridpur Sadar ', ' Alfadanga ', ' Boalmari ', ' Sadarpur ', ' Nagarkanda ', ' Bhanga ', ' Charbhadrasan ', ' Madhukhali ', ' Saltha'],
+
+
+
+            'panchagarh': ['Panchagarh ', ' Debiganj ', ' Boda ', ' Atwari ', ' Tetulia'],
+            'dinajpur': ['Nawabganj ', ' Birganj Upazila ', ' Ghoraghat ', ' Birampur ', ' Parbatipur Upazila ', ' Bochaganj Upazila ', ' Kaharol Upazila ', ' Fulbari Upazila ', ' Dinajpur Sadar ', ' Hakimpur Upazila ', ' Khansama ', ' Biral Upazila ', ' Chirirbandar Upazila'],
+            'lalmonirhat': ['Lalmonirhat Sadar ', ' Kaliganj ', ' Hatibandha ', ' Patgram ', ' Aditmari upazilas'],
+            'nilphamari': ['Syedpur Upazila ', ' Domar Upazila ', ' Dimla ', ' Jaldhaka ', ' Kishoreganj ', ' Nilphamari Sadar'],
+            'gaibandha': ['Sadullapur ', ' Gaibandha Sadar ', ' Palashbari ', ' Saghata Upazila ', ' Gobindganj Upazila ', ' Sundarganj ', ' Fulchhari'],
+            'thakurgaon': ['Thakurgaon Sadar ', ' Pirganj Upazila ', ' Ranishankail Upazila ', ' Haripur Upazila ', ' Baliadangi Upazila'],
+            'rangpur': ['Rangpur Sadar ', ' Gangachara ', ' Taraganj Upazila ', ' Badarganj Upazila ', ' Mithapukur Upazila ', ' Pirganj Upazila ', ' Kaunia Upazila ', ' Pirgachha Upazila'],
+            'kurigram': ['Kurigram Sadar ', ' Nageshwari ', ' Bhurungamari ', ' Fulbari ', ' Rajarhat ', ' Ulipur ', ' Chilmari ', ' Roumari ', ' Char Rajibpur'],
+
+            'sherpur': ['Sherpur Sadar ', ' Nalitabari Upazila ', ' Sreebardi Upazila ', ' Nakla Upazila ', ' Jhenaigati Upazila'],
+            'mymensingh': ['Fulbaria ', ' Trishal ', ' Bhaluka ', ' Muktagachha ', ' Mymensingh Sadar ', ' Dhobaura ', ' Fulpur ', ' Haluaghat ', ' Gauripur ', ' Gafargaon ', ' Ishwarganj ', ' Nandail ', ' Tarakanda'],
+            'jamalpur': ['Jamalpur Sadar ', ' Melandah ', ' Islampur ', ' Dewanganj ', ' Sarishabari ', ' Madarganj ', ' Bakshiganj'],
+            'netrokona': ['Barhatta ', ' Durgapur ', ' Kendua ', ' Atpara ', ' Madan ', ' Khaliajuri ', ' Kalmakanda ', ' Mohanganj ', ' Purbadhala ', ' Netrokona Sadar'],
+        }
+
+        division.onchange = (e) => {
+            zilla.innerHTML = '<option value="">Choose District</option>';
+            let zilla_list = zilla_under_div[e.target.value];
+
+            zilla_list.map((val) => {
+                let current_district = val.toLowerCase();
+                let create_district_option = document.createElement('option');
+                create_district_option.textContent = val;
+                create_district_option.value = current_district;
+                zilla.appendChild(create_district_option);
+            });
+
+
+
+            if (zilla.childElementCount >= 1) {
+                zilla.onchange = (e) => {
+                    if (e.target.value !== '0') {
+                        upozilla.innerHTML = '<option value="">Choose Upozilla</option>';
+                        let current_upzilla_list = upozilla_list[e.target.value];
+                        console.log(current_upzilla_list);
+                        current_upzilla_list.map((val) => {
+                            let current_upzilla = val.toLowerCase();
+                            let create_upzilla_option = document.createElement('option');
+                            create_upzilla_option.textContent = val;
+                            create_upzilla_option.value = current_upzilla;
+                            upozilla.appendChild(create_upzilla_option);
+                        });
+                    }
+
+
+                }
+            }
+        }
+
+        const select_news_type = document.querySelector('#news-type');
+        const select_lead_news_type = document.querySelector('#lead-news-type');
+        const lead_news_type_div = document.querySelector('#leady-news-type-div');
+
+        select_news_type.onchange = (e) =>{
+            if (e.target.value === 'lead_news') {
+                lead_news_type_div.style.display = 'block';
+            }else{
+                lead_news_type_div.style.display = 'none';
+            }
+        }
+
+
+<!--/ add news section #################################################################-->
+const news_cat = document.getElementById('select_news_cat');
+const select_news_subcat = document.getElementById('select_news_subcat');
+
+news_cat.addEventListener('change', function(event){
+
+    select_news_subcat.innerHTML = '<option value="">News Subcategory</option>';
+<!--    // starts ajax method-->
+    $.ajax({
+
+    url: 'http://127.0.0.1:8000/ap/add/news/',
+    type: 'get',
+    data: {
+        news_cat_id: event.target.value,
+    },
+    success: function(response){
+        news_subcats  = response.news_subcat_list,
+<!--        map function starts-->
+
+        news_subcats.map(subcat=>{
+        create_subcat_Option = document.createElement('option');
+        create_subcat_Option.textContent = subcat.news_subcat;
+        create_subcat_Option.value = subcat.id;
+        select_news_subcat.appendChild(create_subcat_Option);
+        })
+
+<!--        map function ends-->
+    },
+
+    });
+<!--     ends ajax method-->
+});
+
+</script>
+
+<!-- end app-main -->
+{% endblock %}

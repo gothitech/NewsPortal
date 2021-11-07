@@ -1,0 +1,118 @@
+{% extends 'back-end/admin_panel/index.html' %}
+{% load static %}
+
+{% block main-block %}
+
+
+<!-- begin app-main -->
+<div class="app-main" id="main">
+    <!-- begin container-fluid -->
+    <div class="container-fluid">
+        <!-- begin row -->
+        <div class="row">
+            <div class="col-lg-3"></div>
+            <div class="col-lg-6">
+
+                <!--            django message framework-->
+        <div class="row">
+            <div class="col-xl-3"></div>
+            <div class="col-xl-6">
+                {% if messages %}
+                {% for message in messages %}
+
+                <div {% if message.tags %} class="alert alert-{{ message.tags }} alert-dismissible fade show" {% endif %} role="alert">
+                    <strong>{{ message }}!</strong>
+                    <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
+
+                {% endfor %}
+                {% endif %}
+            </div>
+            <div class="col-xl-3"></div>
+        </div>
+
+        <!--            django message framework ends-->
+
+                <div class="card card-statistics">
+                    <div class="card-header">
+                        <div class="card-heading">
+                            <h4 class="card-title">News Sub-Category List</h4>
+                        </div>
+                    </div>
+                    <div class="card-body">
+                        <div class="table-responsive">
+                            <table class="table table-success mb-0">
+                                <thead>
+                                <tr>
+                                    <th scope="col" class="text-center">#</th>
+                                    <th scope="col" class="text-center">Name</th>
+                                    <th scope="col" class="text-center">Added At</th>
+                                    <th scope="col" class="text-center">Action</th>
+                                </tr>
+                                </thead>
+                                <tbody>
+                                {% if news_subcat_list_by_cat_id %}
+                                {% for subcat in news_subcat_list_by_cat_id %}
+                                <tr>
+                                    <th scope="row" class="text-center">{{forloop.counter}}</th>
+                                    <td class="text-center">{{subcat.news_subcat}}</td>
+                                    <td class="text-center">{{subcat.added_at}}</td>
+                                    <td class="text-center">
+
+<!--                                        delete modal-->
+                                            <button type="button" data-toggle="modal" data-target="#deleteModal_{{subcat.pk}}"
+                                                style="width: auto; border: none; cursor: pointer; outline: none;background:   #FF0000; color: white;">
+                                            Delete
+                                        </button>
+
+
+                                        <!-- Modal -->
+                                        <div class="modal fade" id="deleteModal_{{subcat.pk}}" tabindex="-1" role="dialog"
+                                             aria-labelledby="deleteModal_{{subcat.pk}}" aria-hidden="true">
+                                            <div class="modal-dialog" role="document">
+                                                <div class="modal-content">
+                                                    <div class="modal-header">
+                                                        <p class="modal-title" id="exampleModalLabel">Are you sure want to delete this <strong>"{{subcat.news_subcat}}"</strong> category name?</p>
+                                                        <button type="button" class="close" data-dismiss="modal"
+                                                                aria-label="Close">
+                                                            <span aria-hidden="true">&times;</span>
+                                                        </button>
+                                                    </div>
+                                                    <div class="modal-footer">
+                                                        <button type="button" class="btn btn-secondary"
+                                                                data-dismiss="modal">No
+                                                        </button>
+                                                        <a href="{%url 'apDelNewsSubcatByNewsCat' news_subcat_id=subcat.pk %}">
+                                                            <button type="button" class="btn btn-primary">Yes</button>
+                                                        </a>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+
+<!--                                        delete modal ends-->
+
+                                    </td>
+                                </tr>
+                                {% endfor %}
+                                {% else %}
+                                <h3 class="text-center">No sub-category added yet!</h3>
+                                {% endif %}
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="col-lg-3"></div>
+        </div>
+        <!-- end row -->
+    </div>
+    <!-- end container-fluid -->
+</div>
+
+
+<!-- end app-main -->
+{% endblock %}

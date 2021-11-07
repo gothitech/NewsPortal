@@ -1,0 +1,125 @@
+{% extends 'back-end/admin_panel/index.html' %}
+{% load static %}
+
+{% block main-block %}
+
+
+<!-- begin app-main -->
+<div class="app-main" id="main">
+    <!-- begin container-fluid -->
+    <div class="container-fluid">
+        <!-- begin row -->
+
+        <!--            django message framework-->
+        <div class="row">
+            <div class="col-xl-3"></div>
+            <div class="col-xl-6">
+                {% if messages %}
+                {% for message in messages %}
+
+                <div {% if message.tags %} class="alert alert-{{ message.tags }} alert-dismissible fade show" {% endif %} role="alert">
+                    <strong>{{ message }}!</strong>
+                    <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
+
+                {% endfor %}
+                {% endif %}
+            </div>
+            <div class="col-xl-3"></div>
+        </div>
+        <!--            django message framework ends-->
+
+        <!-- begin row -->
+        <div class="row">
+            <div class="col-md-12 m-b-30">
+                <!-- begin page title -->
+                <div class="d-block d-sm-flex flex-nowrap align-items-center">
+                    <div class="page-title mb-2 mb-sm-0">
+                        <h1>News List</h1>
+                    </div>
+                    <div class="ml-auto d-flex align-items-center">
+                        <nav>
+                            <ol class="breadcrumb p-0 m-b-0">
+                                <li class="breadcrumb-item">
+                                    <a href="index.html"><i class="ti ti-home"></i></a>
+                                </li>
+                                <li class="breadcrumb-item">
+                                    News
+                                </li>
+                                <li class="breadcrumb-item active text-primary" aria-current="page">News List</li>
+                            </ol>
+                        </nav>
+                    </div>
+                </div>
+                <!-- end page title -->
+            </div>
+        </div>
+        <!-- end row -->
+
+        <!-- begin row -->
+        <div class="row">
+            <div class="col-lg-12">
+                <div class="card card-statistics">
+                    <div class="card-body">
+                        <div class="datatable-wrapper table-responsive">
+                            <table id="datatable" class="display compact table table-striped table-bordered">
+                                <thead>
+                                <tr>
+                                    <th class="text-center">Gallery ID</th>
+                                    <th class="text-center">Gallery Title</th>
+                                    <th class="text-center">Category</th>
+                                    <th class="text-center">Sub-category</th>
+                                    <th class="text-center">See Images</th>
+                                    <th class="text-center">Action</th>
+                                </tr>
+                                </thead>
+                                <tbody>
+                                {% if gallery_list %}
+                                {% for gallery in gallery_list %}
+                                <tr>
+                                    <td class="text-center">{{gallery.gallery_id}}</td>
+                                    <td class="text-center">{{gallery.title|truncatechars:25}}</td>
+                                    <td class="text-center">{{gallery.category.name}}</td>
+                                    <td class="text-center">{{gallery.subcategory.news_subcat}}</td>
+                                    <td class="text-center">
+                                        <a href="{% url 'apNewsGalleryImages' gallery_id=gallery.gallery_id %}">
+                                            <button type="button" data-toggle="modal"
+                                                data-target="#deleteNews_{{news.pk}}"
+                                                style="width: auto; border: none; cursor: pointer; outline: none;background:   #028482; color: white;">
+                                            View all images
+                                        </button>
+                                        </a>
+                                    </td>
+                                    <td class="text-center">
+                                        <!--                                        delete modal-->
+                                        <a href="{% url 'apDelNewsGallery' gallery_id=gallery.gallery_id %} ">
+                                            <button type="button"
+                                                style="width: auto; border: none; cursor: pointer; outline: none;background:   #FF0000; color: white;">
+                                            <i class="fa fa-trash"></i>
+                                        </button>
+                                        </a>
+                                    </td>
+                                </tr>
+                                {% endfor %}
+                                {% else %}
+                                <h3>No news found!</h3>
+                                {% endif %}
+                                </tbody>
+
+                            </table>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <!-- end row -->
+
+    </div>
+    <!-- end container-fluid -->
+</div>
+
+
+<!-- end app-main -->
+{% endblock %}

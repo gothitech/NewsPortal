@@ -1,0 +1,222 @@
+{% extends 'front-end/index.html' %}
+
+{% load static %}
+
+{% block site_title %}
+  <title>{{news.news_title}}</title>
+{% endblock %}
+
+{% block single_page %}
+<!-- single-page css stylesheet -->
+<link rel="stylesheet" href="{% static 'front-end/css/single-page.css' %}">
+{% endblock %}
+
+{% block main-content %}
+<br>
+  <!-- breadcumbs -->
+<!--  <section class="breadcumbs">-->
+<!--    <div class="container">-->
+<!--      <div class="row">-->
+<!--        <div class="col-md-12">-->
+<!--          <nav aria-label="breadcrumb">-->
+<!--            <ol class="breadcrumb">-->
+<!--              <li class="breadcrumb-item"><a href="#"><i class="fas fa-home"></i></a></li>-->
+<!--              <li class="breadcrumb-item"><a href="#">বিস্তারিত</a></li>-->
+<!--              <li class="breadcrumb-item active" aria-current="page">{{news.news_category.name}}</li>-->
+<!--            </ol>-->
+<!--          </nav>-->
+<!--        </div>-->
+<!--      </div>-->
+<!--    </div>-->
+<!--  </section>-->
+  <!-- breadcumbs ends -->
+
+
+  <!-- news details section    -->
+
+  <section class="news-details-section">
+    <div class="container">
+      <div class="row">
+        <!-- column for news details with image -->
+        <div class="col-md-8 news-details-main-div">
+          <div class="news-details-image-section">
+
+            <div>
+              <h2 class="news-heading">
+                {{news.news_title}}
+              </h2>
+              <p> <strong>প্রকাশ:</strong> {{news.added_at}} | {{news.news_publisher}}, Soroborno</p>
+            </div>
+
+            <div class="single-page-social-media">
+              <div class="single-page-social-media-icons">
+                <li class="fb"><a href="https://www.facebook.com/sharer.php?u=http://127.0.0.1:8000/{% url 'frontEndNewsDetails' pk=news.pk %}
+"><i class="fab fa-facebook-square"></i></a></li>
+                <li class="linkedin"><a href="#"><i class="fab fa-linkedin-in"></i></a></li>
+                <li class="twitter"><a href="#"><i class="fab fa-twitter-square"></i></a></li>
+                <li class="instagram"><a href="#"><i class="fab fa-instagram-square"></i></a></li>
+              </div>
+            </div>
+
+            <img src="{{news.news_img.url}}" alt="">
+            <div>
+              <div class="img-short-description">
+                <p>{{news.news_img_short_description}}</p>
+              </div>
+            </div>
+
+            <div class="news-details-text">
+              <p>
+                {{news.news_details|safe}}
+              </p>
+            </div>
+
+          </div>
+
+
+          <!-- comment section -->
+           <div class="news_tags">
+             <br>
+<!--            <h5>Tags:</h5>-->
+             {% if news_tags %}
+             {% for tag in news_tags %}
+            <span>{{tag}}</span>
+             {% endfor %}
+             {% endif %}
+           </div>
+          <!-- comment section ends -->
+
+        </div>
+        <!-- column for news details enbs -->
+
+        <!-- col for side-bar -->
+        <div class="col-md-4 most-popular-recent-visited">
+
+          <!-- most recent news section -->
+
+          <div class="most-recent-main-div">
+            <!-- tab starts -->
+            <div class="tab">
+              <button class="tablinks active" onclick="mostRecentPopVisited(event, 'recent')">সর্বশেষ</button>
+              <button class="tablinks" onclick="mostRecentPopVisited(event, 'pop')">সর্বাধিক</button>
+            </div>
+
+            <div id="recent" class="tabcontent show_it">
+              <div class="row">
+                <div class="col-md-12">
+                  {% if most_recent_news_list %}
+                  {% for news in most_recent_news_list %}
+                  <h6>
+                    <i class="far fa-newspaper"></i> <a href="{%url 'frontEndNewsDetails' pk=news.pk %}">
+                    {{news.news_title|safe|truncatechars:35}}
+                    </a>
+                  </h6>
+                  {% endfor %}
+                  {% endif %}
+                </div>
+              </div>
+            </div>
+
+            <div id="pop" class="tabcontent hidden_tab">
+              <div class="row">
+                <div class="col-md-12">
+                  {% if most_visited_news_list %}
+                    {% for news in most_visited_news_list %}
+                    <h6 style="text-align: justify;">
+                      <i class="far fa-newspaper"></i> <a href="{% url 'frontEndNewsDetails' pk=news.pk %}">
+                      {{news.news_title|truncatechars:40}}
+                      </a>
+                    </h6>
+                    {% endfor %}
+                    {% endif %}
+                </div>
+              </div>
+            </div>
+
+            <!-- tab ends -->
+          </div>
+          <!-- most recent news section ends -->
+
+          <br><br>
+
+          <!-- news categories -->
+          {% if news_category_list %}
+          <div class="all-news-categories-main-div">
+            <h4>All News Categories</h4>
+            <div>
+              {% for news_cat in news_category_list %}
+              <li><a href="{% url 'frontEndNewsList' pk=news_cat.pk %}"> {{news_cat.name}}</a></li>
+              {% endfor %}
+            </div>
+          </div>
+          {% endif %}
+          <!-- news categories ends -->
+
+
+          <!-- news categories -->
+
+<!--          <div class="div-for-ads">-->
+<!--            <h3>This div for showing ads</h3>-->
+<!--          </div>-->
+          <!-- news categories ends -->
+
+        </div>
+        <!-- col for side-bar ends -->
+
+      </div>
+
+    </div>
+  </section>
+
+<!--fb comments plugin-->
+<section>
+  <div class="container">
+    <div class="row">
+      <div class="col-md-12">
+        <!--fb comments plugin-->
+          <div class="fb-comments" data-href="https://developers.facebook.com/docs/plugins/comments#configurator" data-width="" data-numposts="1"></div>
+        <!--fb comments plugin ends-->
+      </div>
+    </div>
+  </div>
+</section>
+<!--ends fb comments plugin-->
+
+  <!-- news details section ends -->
+
+  <br>
+
+  <!-- section for related news -->
+  <section class="related-news-section">
+    <div class="container">
+      <div style="background-color: whitesmoke; padding: 10px;">
+        <!-- related news row -->
+
+        <div class="row">
+          <div class="col-md-12">
+            <h3 class="related-news-title"> সম্পর্কিত<span><i class="fas fa-angle-right"></i></span>
+            </h3>
+          </div>
+        </div>
+
+        <div class="row">
+          {% for news in related_news_list %}
+          <div class="col-md-3">
+            <!-- news cards -->
+            <div class="card" style="width: 100%;height: 240px;">
+              <a href="{%url 'frontEndNewsDetails' pk=news.pk %}" target="_blank"><img class="card-img-top" src="{{news.news_img.url}}" style="height: 200px;" alt=""></a>
+              <h4><a href="{%url 'frontEndNewsDetails' pk=news.pk %}" target="_blank" style="font-size: 18px; padding: 5px;">{{news.news_title|safe|truncatechars:30}}</a></h4>
+            </div>
+            <!-- news cards ends -->
+          </div>
+          {% endfor %}
+        </div>
+        <!-- related news row ends -->
+      </div>
+    </div>
+  </section>
+  <!-- section for related news eds -->
+
+  <br><br>
+
+{% endblock %}

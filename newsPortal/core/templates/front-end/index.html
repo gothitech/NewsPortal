@@ -1,0 +1,360 @@
+{% load static %}
+
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  {% block site_title %}
+
+  {% endblock %}
+
+  <!-- bootstrap 4 css link -->
+  <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css"
+    crossorigin="anonymous">
+
+  <!-- custom css file -->
+  <link rel="stylesheet" href="{% static 'front-end/css/index.css' %}">
+  <link rel="stylesheet" href="{% static 'front-end/css/mq_index.css' %}">
+
+  <link rel="stylesheet" href="{% static 'front-end/css/nav_full_body.css' %}">
+
+  <!-- fontawesome -->
+  <script src="https://kit.fontawesome.com/c9e991d87d.js" crossorigin="anonymous"></script>
+
+  <!-- owl-carousel -->
+  <link rel="stylesheet" href="{% static 'front-end/slider/owl-carousel/owl.carousel.min.css' %}">
+  <link rel="stylesheet" href="{% static 'front-end/slider/owl-carousel/owl.theme.default.min.css' %}">
+  <!-- owl-carousel ends -->
+
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Noto+Serif+Bengali:wght@300;500&display=swap" rel="stylesheet">
+
+  {% block single_page %}
+  {% endblock %}
+
+  {% block news_list %}
+
+  {% endblock %}
+
+</head>
+
+<body>
+
+<!--fb comments feature-->
+<div id="fb-root"></div>
+<script async defer crossorigin="anonymous" src="https://connect.facebook.net/en_US/sdk.js#xfbml=1&version=v12.0" nonce="IUzdKi8L"></script>
+<!--ends fb comments feature-->
+
+{% block ads_onload %}
+
+{% endblock %}
+
+
+  <!-- header starts -->
+  <header>
+
+    <div class="container">
+      <!-- logo starts -->
+      <div class="row">
+
+        <!-- col starts -->
+        <div class="col-md-4 col-sm-12 col-12">
+          <div class="logo">
+            {% if site_logo %}
+            <a href="/"><img src="{{site_logo.logo.url}}" style="height: 100px; width: 300px;" alt=""></a>
+            {% else %}
+            <img src="{% static 'front-end/logo/logo.png' %}" alt="">
+            {% endif %}
+          </div>
+        </div>
+        <!-- col ends -->
+
+        <div class="col-12 col-md-8 col-sm-12 section-for-custom-ads">
+          <div class="custom-ads-div">
+            <button type="button" class="close_custom_header_ads" onclick="close_custom_header_ads(this);"><i class="fas fa-times"></i></button>
+            {% if ads_header %}
+            <a href="{{ads_header.ads_url}}">
+              <img src="{{ads_header.img.url}}" style="width: 100%; height: 100px;" alt="">
+            </a>
+            {% else %}
+            <a href="#">
+              <img src="{% static 'front-end/images/appstore.png' %}" alt="">
+            </a>
+            {% endif %}
+          </div>
+        </div>
+
+      </div>
+      <!-- logo ends -->
+
+      <!-- date and social media -->
+      <div class="row">
+
+        <div class="col-md-6 col-sm-12 col-12">
+          <div class="date-time-zone">
+            <p><span id="today_eng_date"></span>, <span id="date-today"></span></p>
+          </div>
+        </div>
+
+        <div class="col-md-6 col-sm-12 col-12">
+          <div class="social-media-div">
+            <ul>
+              <li><a href=""><i class="fab fa-facebook-f"></i></a></li>
+              <li><a href=""><i class="fab fa-twitter"></i></a></li>
+              <li><a href=""><i class="fab fa-instagram"></i></a></li>
+              <li><a href=""><i class="fab fa-linkedin-in"></i></a></li>
+            </ul>
+          </div>
+        </div>
+
+      </div>
+      <!-- date and social media ends -->
+
+      <!-- nav bar starts.......... -->
+
+
+
+      <!-- nav bar ends -->
+    </div>
+
+  </header>
+  <!-- header ends -->
+  <br>
+
+  <!-- nav bar starts  -->
+  <section>
+    <div class="container-fluid">
+      <div class="row">
+        <div class="col-md-12 header-nav-bar" id="header-nav-bar">
+          <div class="container">
+            <nav id="nav">
+
+              <!-- search bar -->
+              <div class="search_bar" id="search-bar-main-div">
+                <!-- <div> -->
+                <form action="{% url 'frontEndSearchResult' %}" method="post" enctype="multipart/form-data" id="search-form">
+                  {% csrf_token %}
+                  <input type="search" name="search_post" placeholder="Search">
+                  <button type="submit" class="search_submit_btn"><i class="fas fa-search"></i></button>
+                  <button type="button" class="search_close_btn" style="background: #E47A2E;"><i class="fas fa-times"></i></button>
+                </form>
+                <!-- </div> -->
+              </div>
+              <!-- search bar ends -->
+
+              <!-- nav options -->
+              <div class="main-nav-options">
+                <li class=""><a href="/"><i class="fas fa-home"></i></a></li>
+                {% for category in news_category_list %}
+                <li class="nav-main-li"><a href="{% url 'frontEndNewsList' pk=category.pk %}" target="_blank">{{category.name}}</a></li>
+                {% endfor %}
+                <div class="search_mobile_bar">
+                  <li>
+                    <button type="button" id="click-to-search-here"><i class="fas fa-search"></i></button>
+                  </li>
+                  <li>
+                    <button type="button" id="full_body_nav"><i class="fas fa-bars"></i></button>
+                  </li>
+                </div>
+              </div>
+              <!-- ends nav -->
+
+            </nav>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- nav bar ends -->
+
+
+
+  <!-- nav bar for small devices starts -->
+  <section class="nav_full_body">
+    <div class="container">
+      <div class="row">
+        <div class="col-md-12">
+          <nav>
+            <button type="button" class="close_full_nav"><i class="fas fa-times"></i></button>
+            <ul>
+              <li><a href="/"><i class="fas fa-home"></i></a></li>
+              {% for category in news_category_all %}
+              <li><a href="{%url 'frontEndNewsList' pk=category.pk %}">{{category.name}}</a></li>
+              {% endfor %}
+            </ul>
+
+          </nav>
+
+        </div>
+
+      </div>
+    </div>
+  </section>
+  <!-- nav bar for small devices ends -->
+
+
+
+  <!-- header ends -->
+{% if breaking_news %}
+<br>
+  <section class="breaking-news-slider">
+    <div class="container" style="width: 100%;">
+      <div class="row">
+        <div class="col-md-12">
+
+          <!-- breaking news banner -->
+          <div class="text-slider-main-div" id="text-slider-main-div">
+
+            <p class="breaking-news-title" id="breaking-news-title">ব্রেকিং নিউজঃ</p>
+
+            <p class="text-slider-content" id="text-slider-content">
+              {{ breaking_news.news }}
+            </p>
+          </div>
+          <!-- breaking news banner ends -->
+        </div>
+      </div>
+    </div>
+  </section>
+{% endif %}
+
+{% block main-content %}
+
+{% endblock %}
+
+<br><br><br>
+  <section class="footer_top_section">
+    <div class="container">
+
+      <div class="row mt-2 ">
+
+        <div class="col-md-3 col-sm-6 col-xs-6 order-xs-2 mt-3 footer_top_section_important_links">
+          <div>
+            <h4 class="footer_top_section_title"><a href="#">স্বরবর্ন</a></h4>
+            <!-- <ul> -->
+            <li><a href="/fe/news/contact">যোগাযোগ</a></li>
+            <li><a href="#">গোপনীয়তার নীতি</a></li>
+            <li><a href="#">শর্তাবলী</a></li>
+            <li><a href="#">কুকিজ</a></li>
+            <!-- </ul> -->
+          </div>
+        </div>
+
+        <div class="col-md-6 mt-3 col-sm-12 order-xs-1 footer-top-com-details">
+          <div>
+            <h4>স্বরবর্ন সম্পর্কে</h4>
+            <p>
+              {{about_us.about_us}}
+            </p>
+          </div>
+        </div>
+
+        <div class="col-md-3 col-sm-6 col-xs-6 mt-3 footer-top-com-address">
+          <div>
+            <!-- <h4>Address</h4> -->
+            <li><strong>প্রকাশকঃ </strong> {{newsEditorNameList.name}}</li>
+            <li style="position:relative; top: 5px;"><strong>সম্পাদকঃ </strong> {{newsPublisherList.name}}</li>
+            <li><a href="#"><img src="{% static 'front-end/images/playstore.png' %}" alt=""></a></li>
+            <li style="position: relative; bottom: 5px;"><a href="#"><img src="{% static 'front-end/images/appstore.png' %}" alt=""></a></li>
+          </div>
+        </div>
+
+      </div>
+
+    </div>
+  </section>
+
+  <section class="footer_bottom_section">
+    <div class="container">
+      <div class="row">
+        <div class="col-md-12">
+          <div>
+            <h6>Copyright@<a href="/" style="color: #E19056;">Soroborno.com</a> || Designed & Developed By Gothitechnologies Ltd.</h6>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- scroll to top -->
+  <section>
+    <div class="container-fluid">
+      <div class="row">
+        <div class="col-12">
+          <div class="scroll_to_top">
+            <span><i class="fas fa-arrow-alt-circle-up"></i></span>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+
+  <script src="https://code.jquery.com/jquery-3.2.1.slim.min.js" integrity="" crossorigin="anonymous"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.12.9/umd/popper.min.js" integrity=""
+    crossorigin="anonymous"></script>
+  <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/js/bootstrap.min.js" integrity=""
+    crossorigin="anonymous"></script>
+
+
+  <script src="{% static 'front-end/slider/owl-carousel/jquery.min.js' %}"></script>
+  <script src="{% static 'front-end/slider/owl-carousel/owl.carousel.min.js' %}"></script>
+
+    <!-- custom js file -->
+    <script src="{% static 'front-end/js/index.js' %}"></script>
+
+    <script src="{% static 'front-end/js/nav_full_body.js' %}"></script>
+
+  {% block custom_ads_js %}
+
+  {% endblock %}
+
+    <script src="{% static 'front-end/js/click_to_top.js' %}"></script>
+    <script src="{% static 'front-end/js/search-bar.js' %}"></script>
+    <script src="{% static 'front-end/js/sticky-navbar.js' %}"></script>
+    <script src="{% static 'front-end/js/nav-bar.js' %}"></script>
+
+    <!-- breaking news slider js -->
+    <script src="{% static 'front-end/js/breaking_news_slider.js' %}"></script>
+
+  <!-- eng to bangla date converter link -->
+  <script src="https://bangla.plus/scripts/bangladatetoday.min.js"></script>
+  <script>dateToday('date-today', 'bangla');</script>
+
+  <script>
+    $(document).ready(function () {
+      $(".owl-carousel").owlCarousel();
+    });
+
+    $('.owl-carousel').owlCarousel({
+      loop: true,
+      margin: 10,
+      responsiveClass: true,
+      autoplay: true,
+      autoplayTimeout: 5000,
+      smartSpeed: 2500,
+      responsive: {
+        0: {
+          items: 1,
+          nav: false
+        },
+        600: {
+          items: 1,
+          nav: false
+        },
+        1000: {
+          items: 1,
+          nav: false,
+          loop: true
+        }
+      }
+    })
+  </script>
+</body>
+
+</html>
